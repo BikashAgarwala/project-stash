@@ -10,4 +10,5 @@ public class CreateItemRequest {
     private ItemType type;
     private String content;
     private String title;
+    private Long bucketId;
 }

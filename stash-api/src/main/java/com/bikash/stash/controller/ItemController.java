@@ -1,6 +1,7 @@
 package com.bikash.stash.controller;
 
 import com.bikash.stash.dto.CreateItemRequest;
+import com.bikash.stash.dto.MoveItemRequest;
 import com.bikash.stash.model.Item;
 import com.bikash.stash.service.ItemService;
 import org.springframework.http.HttpStatus;
@@ -32,8 +33,15 @@ public class ItemController {
         newItem.setContent(request.getContent());
         newItem.setTitle(request.getTitle());
 
-        Item savedItem = itemService.createItem(newItem, userEmail);
+        Item savedItem = itemService.createItem(newItem, request.getBucketId(), userEmail);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedItem);
+    }
+
+    @PatchMapping("/{itemId}/move")
+    public ResponseEntity<Item> moveItem(@PathVariable Long itemId, @RequestBody MoveItemRequest request, @AuthenticationPrincipal UserDetails userDetails) {
+        String userEmail = userDetails.getUsername();
+        Item movedItem = itemService.moveItemToBucket(itemId, request.getTargetBucketId(), userEmail);
+        return ResponseEntity.ok(movedItem);
     }
 
     @GetMapping
